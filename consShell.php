@@ -47,48 +47,47 @@
                     <th>Cancel?</th>
                 </tr>
                 <tr>
-                    <th>Lava Girl</th>
-                    <th>15 April 12:00 PM</th>
-                    <th>Eye Makeup</th>
-                    <th><a href="Cancel">Cancel</a> </th>
+                    <td>Lava Girl</td>
+                    <td>15 April 12:00 PM</td>
+                    <td>Eye Makeup</td>
+                    <td><a href="Cancel">Cancel</a> </td>
                 </tr>
                 <tr>
-                    <th>Taylor Ki</th>
-                    <th>15 April 1:00 PM</th>
-                    <th>Skin care</th>
-                    <th><a href="Cancel">Cancel</a> </th>
+                    <td>Taylor Ki</td>
+                    <td>15 April 1:00 PM</td>
+                    <td>Skin care</td>
+                    <td><a href="Cancel">Cancel</a> </td>
                 </tr>
                 <tr>
-                    <th>Katie Mann</th>
-                    <th>15 April 5:00 PM</th>
-                    <th>Hair Care</th>
-                    <th><a href="Cancel">Cancel</a> </th>
+                    <td>Katie Mann</td>
+                    <td>15 April 5:00 PM</td>
+                    <td>Hair Care</td>
+                    <td><a href="Cancel">Cancel</a> </td>
                 </tr>
                 <tr>
-                    <th>Zach Efron</th>
-                    <th>16 April 10:00 AM</th>
-                    <th>Hair Care</th>
-                    <th><a href="Cancel">Cancel</a> </th>
+                    <td>Zach Efron</td>
+                    <td>16 April 10:00 AM</td>
+                    <td>Hair Care</td>
+                    <td><a href="Cancel">Cancel</a> </td>
                 </tr>
                 <tr>
-                    <th>Lilly Sprouse</th>
-                    <th>17 April 1:00 PM</th>
-                    <th>Eye Makeup</th>
-                    <th><a href="Cancel">Cancel</a> </th>
+                    <td>Lilly Sprouse</td>
+                    <td>17 April 1:00 PM</td>
+                    <td>Eye Makeup</td>
+                    <td><a href="Cancel">Cancel</a> </td>
                 </tr>
                 <tr>
-                    <th>Dobra Nann</th>
-                    <th>17 April 2:00 PM</th>
-                    <th>Full Face Makeup</th>
-                    <th><a href="Cancel">Cancel</a> </th>
+                    <td>Dobra Nann</td>
+                    <td>17 April 2:00 PM</td>
+                    <td>Full Face Makeup</td>
+                    <td><a href="Cancel">Cancel</a> </td>
                 </tr>
                 <tr>
-                    <th>Zedian Apa</th>
-                    <th>19 April 3:00 PM</th>
-                    <th>Bold Lip Makeup</th>
-                    <th><a href="Cancel">Cancel</a> </th>
+                    <td>Zedian Apa</td>
+                    <td>19 April 3:00 PM</td>
+                    <td>Bold Lip Makeup</td>
+                    <td><a href="Cancel">Cancel</a> </td>
                 </tr>
-
             </table>
         </div>
     </article>

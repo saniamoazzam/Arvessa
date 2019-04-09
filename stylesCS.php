@@ -218,5 +218,7 @@ padding: 8px;
 }
 
 tr:nth-child(even) {
-background-color: #dddddd;
+background-color: #f2f2f2;
 }
+
+tr:hover {background-color: #ddd;}
