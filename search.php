@@ -1,87 +1,11 @@
-<DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Arvessa</title>
     <link rel="stylesheet" href="styles.php"/>
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <!-- jQuery library -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 </head>
 <body id="home">
-<?php
-$barcode = $_GET['barcode'];
-$connection=mysqli_connect("localhost","root","","arvessa");
-// Check connection
-if (mysqli_connect_errno($connection))
-{
-    echo "Failed to connect to MySQL: " . mysqli_connect_error();
-}
-$customerID = mysqli_query($connection, "SELECT MAX(Customer_ID) AS High_ID FROM Customer");
-$product = mysqli_query($connection, "SELECT * FROM Product_Online WHERE Barcode ='$barcode'");
-$row = mysqli_fetch_array($product);
-$highID = mysqli_fetch_array($customerID);
-$newID = Null;
-//echo $newID;
-
-
-//    if (isset($_POST['quantity'])) {
-//        $selected= $_POST['quantity'];
-//
-//    }
-
-if (isset($_POST['submit'])){
-    $quantity= $_POST['quantity'];
-    $barcode = $row['Barcode'];
-    $newID= $highID['High_ID'] + 1;
-    $sql1 = "INSERT INTO  Customer(Customer_ID) VALUES ('" . $newID . "')";
-    $sql = "INSERT INTO  Cart ( Customer_ID, Barcode, Quantity) VALUES ('" . $newID . "','" . $barcode . "','" . $quantity . "' )";
-
-    if (!mysqli_query($connection,$sql1))
-    {
-        die('Error: ' . mysqli_error($connection));
-    }
-
-    if (!mysqli_query($connection,$sql))
-    {
-        die('Error: ' . mysqli_error($connection));
-    }
-
-    //echo "<script>alert('Success!');</script>";
-
-//                echo '<script>
-//                        $(function() {
-//                        $("#prompt2").dialog();
-//                         })
-//                        </script>'
-//                         .'<div id = "prompt2" title = "Basic Dialog">
-//                        <p>on item added</p>
-//</div>';
-
-//            <script>
-//                    $("#prompt").display = 'block';
-//                    $("#prompt").dialog({
-//                        closeOnEscape: false,
-//                        open: function (event, ui) {
-//                            $(".ui-dialog-titlebar-close", ui.dialog | ui).hide();
-//                        },
-//                        modal: true,
-//                        buttons: {
-//                            Ok: function () {
-//                                $(this).dialog("close");
-//                            }
-//                        }
-//                    });
-//            </script>
-
-
-}
-
-
-?>
-
 <div id="header">
     <div class="container">
         <ul class="menu_top">
@@ -100,13 +24,7 @@ if (isset($_POST['submit'])){
     <div id="site_name">Arvessa</div>
     <div id="icons">
         <ul class="menu_bottom">
-            <li><?php echo
-                    "<a href="
-                        ."checkout.php?id="
-                        .$newID
-                        .">"
-                         ."Cart"
-                         ."</a>"?></li>
+            <li><a href="checkout.php">Cart</a></li>
             <li><a href="profile.php">Profile</a></li>
         </ul>
     </div>
@@ -152,36 +70,53 @@ if (isset($_POST['submit'])){
 </div>
 
 <div class="page-content">
-    <div class="container">
-        <div id="product_picture"><img src=<?php echo $row['Picture']?> width="100%" height="auto"></div>
-        <div id="product_info">
-            <div id="name_price">
-                <div id="product_name"><?php echo $row['Name']?></div>
-                <div id="product_price"><?php echo $row['Price']?></div>
-                <div id="add_cart">
-                    <form method="post">
-                    <div id="quantity">
-                        <select name="quantity">
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
-                        </select>
+    <article>
+        <span id="popular_heading">Search Result</span>
+        <Table class="product-table", cellspacing="10">
+            <?php
+            $category = $_GET['category'];
+            $connection=mysqli_connect("localhost","root","","arvessa");
+            // Check connection
+            if (mysqli_connect_errno($connection))
+            {
+                echo "Failed to connect to MySQL: " . mysqli_connect_error();
+            }
+            $result = mysqli_query($connection, "SELECT * FROM Product_Online WHERE Category ='$category'");
+            //echo $category;
+            //echo $result;
+            $counter = 1;
+            if (mysqli_num_rows($result) > 0) {
+                echo "<tr>";
+                while ($row = mysqli_fetch_array($result)) {
+                    if ($counter % 3 == 1) {
+                        echo "<tr></tr>";
+                    }
+                    echo
+                        "<td>"
+                        . "<a href="
+                        ."productSum.php?barcode="
+                        .$row['Barcode']
+                        .">"
+                        . "<img src="
+                        . $row['Picture']
+                        . "'width=180 height = 180/> "
+                        . "</a>"
+                        . "<br>"
+                        . "<span>"
+                        . $row['Name']
+                        . "</span>"
+                        . "<td>";
 
-<!--                    <button id="add_basket">Add to basket</button>-->
-                        <input id="add_basket" type="submit" value="Add to basket" name="submit">
+                    $counter++;
+                }
 
-                    </div>
-                    </form>
-                </div>
-            </div>
-            <div id="product_description">Description</div>
-        </div>
-    </div>
-    <div id="prompt" title="Order Added">
-        One item added to the basket
-    </div>
+                echo "</tr>";
+            } else {
+                echo "No Matching records are found!";
+            }
+            ?>
+        </Table>
+    </article>
 </div>
 
 <div id="footer">
@@ -189,25 +124,6 @@ if (isset($_POST['submit'])){
         <p id="footer_text">Copyright 2019 INC</div>
 </div>
 </div>
-
-<script>
-    // document.getElementById("add_basket").onclick = function() {
-    //
-    //     $("#prompt").display = 'block';
-    //     $("#prompt").dialog({
-    //         closeOnEscape: false,
-    //         open: function (event, ui) {
-    //             $(".ui-dialog-titlebar-close", ui.dialog | ui).hide();
-    //         },
-    //         modal: true,
-    //         buttons: {
-    //             Ok: function () {
-    //                 $(this).dialog("close");
-    //             }
-    //         }
-    //     });
-    // }
-</script>
 <style>
     * {
         padding: 0;
@@ -270,6 +186,7 @@ if (isset($_POST['submit'])){
         justify-content: center;
         align-items: center;
         display: flex;
+
     }
 
 
@@ -323,14 +240,13 @@ if (isset($_POST['submit'])){
 
 
     .page-content {
-        min-height:600px;
+        min-height:400px;
         margin: 0px;
         padding: 0px;
         justify-content: center;
         align-items: center;
         display: flex;
         flex-flow: row;
-
     }
 
     #popular_heading {
@@ -338,69 +254,6 @@ if (isset($_POST['submit'])){
         align-items: center;
         display: flex;
         font-size: 30px;
-    }
-
-    #product_picture {
-        width:30%;
-        font-size: 25px;
-    }
-    #product_info {
-        width:70%;
-        display:flex;
-        flex-direction:column;
-    }
-
-    #name_price{
-        width:100%;
-        display:flex;
-    }
-
-
-    #product_name {
-        width: 35%;
-        font-size: 20px;
-        padding:2%;
-    }
-
-    #product_price {
-        width:35%;
-        font-size: 20px;
-        padding:2%;
-    }
-
-    #add_cart {
-        display:flex;
-        width:30%;
-        justify-content: center;
-        align-items: center;
-
-    }
-
-    #add_cart input {
-        background-color: black;
-        color: white;
-        border-radius: 5px;
-        border: black;
-        padding: 12px;
-        font-size: 12px;
-        text-transform: uppercase;
-        margin: 10px;
-        height: 40px;
-
-    }
-
-    #add_cart select{
-        background-color: white;
-        border-radius: 5px;
-        padding: 12px;
-        font-size: 13px;
-        width:50px;
-        height: 40px;
-    }
-
-    #product_description {
-        font-size: 15px;
-        padding:2%;
     }
 
     Table.product-table{
@@ -489,10 +342,6 @@ if (isset($_POST['submit'])){
     .dropdown:hover .dropdown-content {display: block;}
 
     .dropdown:hover .dropbtn {text-decoration: underline}
-
-    #prompt {
-        display: none;
-    }
 
 
 </style>

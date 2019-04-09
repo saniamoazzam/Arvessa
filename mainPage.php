@@ -24,7 +24,7 @@
     <div id="site_name">Arvessa</div>
     <div id="icons">
         <ul class="menu_bottom">
-            <li><a href="cart.php">Cart</a></li>
+            <li><a href="checkout.php">Cart</a></li>
             <li><a href="profile.php">Profile</a></li>
         </ul>
     </div>
@@ -34,37 +34,36 @@
     <div class="dropdown">
         <button class="dropbtn">Make Up</button>
         <div class="dropdown-content">
-            <a href="#">Face</a>
-            <a href="#">Cheek</a>
-            <a href="#">Eye</a>
-            <a href="#">Lip</a>
-            <a href="#">Nail</a>
+            <a href="search.php?category=Face">Face</a>
+            <a href="search.php?category=Cheek">Cheek</a>
+            <a href="search.php?category=Eye">Eye</a>
+            <a href="search.php?category=Lip">Lip</a>
         </div>
     </div>
     <div class="dropdown">
         <button class="dropbtn">Skin Care</button>
         <div class="dropdown-content">
-            <a href="#">Moisturizers</a>
-            <a href="#">Cleaners</a>
-            <a href="#">Masks</a>
-            <a href="#">Eye Care</a>
-            <a href="#">Sun Care</a>
+            <a href="search.php?category=Moisturizers">Moisturizers</a>
+            <a href="search.php?category=Cleaners">Cleaners</a>
+            <a href="search.php?category=Masks">Masks</a>
+            <a href="search.php?category=Eye Care">Eye Care</a>
+            <a href="search.php?category=Sun Care">Sun Care</a>
         </div>
     </div>
     <div class="dropdown">
         <button class="dropbtn">Fragrance</button>
         <div class="dropdown-content">
-            <a href="#">Woman</a>
-            <a href="#">Men</a>
+            <a href="search.php?category=Woman">Woman</a>
+            <a href="search.php?category=Man">Man</a>
         </div>
     </div>
     <div class="dropdown">
         <button class="dropbtn">Other</button>
         <div class="dropdown-content">
-            <a href="#">Shampoo & Conditioner</a>
-            <a href="#">Hair Tools</a>
-            <a href="#">Makeup Brushes</a>
-            <a href="#">Accessories</a>
+            <a href="search.php?category=Shampoo">Shampoo & Conditioner</a>
+            <a href="search.php?category=Hair Tools">Hair Tools</a>
+            <a href="search.php?category=Makeup Brushes">Makeup Brushes</a>
+            <a href="search.php?category=Accessories">Accessories</a>
         </div>
     </div>
 
@@ -74,28 +73,47 @@
     <article>
         <span id="popular_heading">Most Popular</span>
         <Table class="product-table", cellspacing="10">
-            <tr>
-                <td><a href="#"><img src="https://www.sephora.com/productimages/product/p427421-av-03-zoom.jpg" width="180" height="180"/>
-                    </a><br>
-                    <span> Protini Polypeptide Moisturizer</span></td>
-                <td><a href="#"><img src="https://www.sephora.com/productimages/sku/s870618-main-zoom.jpg" width="180" height="180" alt="Food2">
-                    </a><br>
-                    <span> Laura Mercier Translucent Loose Setting Poweder</span></td>
-                <td><img src="https://www.sephora.com/productimages/sku/s2084457-main-zoom.jpg" width="180" height="180" alt="Food3>">
-                    <br>
-                    <span> Too Faced Concealer</span></td>
-            </tr>
-            <tr>
-                <td><img src="https://www.sephora.com/productimages/sku/s1637719-main-zoom.jpg"" width="180px" height="180px" alt="Food4">
-                    <br>
-                    <span> Urban Decay Naked2 Eyeshadow Palette </span></td>
-                <td><img src="https://www.sephora.com/productimages/sku/s1847961-main-zoom.jpg" width="180px" height="180px" alt="Food5">
-                    <br>
-                    <span> bareMineral Face Powder Foundation </span></td>
-                <td><img src="https://www.sephora.com/productimages/sku/s2093128-main-zoom.jpg" width="180px" height="180px" alt="Food6">
-                    <br>
-                    <span> Mac Cosmetics Lipstick </span></td>
-            </tr>
+            <?php
+            $connection=mysqli_connect("localhost","root","","arvessa");
+            // Check connection
+            if (mysqli_connect_errno($connection))
+            {
+                echo "Failed to connect to MySQL: " . mysqli_connect_error();
+            }
+            $result = mysqli_query($connection, "SELECT * FROM Product_Online");
+            //echo $category;
+            //echo $result;
+            $counter = 1;
+            if (mysqli_num_rows($result) > 0) {
+                echo "<tr>";
+                while ($row = mysqli_fetch_array($result)) {
+                    if ($counter % 3 == 1) {
+                        echo "<tr></tr>";
+                    }
+                    echo
+                        "<td>"
+                        . "<a href="
+                        ."productSum.php?barcode="
+                        .$row['Barcode']
+                        .">"
+                        . "<img src="
+                        . $row['Picture']
+                        . "'width=180 height = 180/> "
+                        . "</a>"
+                        . "<br>"
+                        . "<span>"
+                        . $row['Name']
+                        . "</span>"
+                        . "<td>";
+
+                    $counter++;
+                }
+
+                echo "</tr>";
+            } else {
+                echo "No Matching records are found!";
+            }
+            ?>
         </Table>
     </article>
 </div>
