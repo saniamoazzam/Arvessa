@@ -6,11 +6,14 @@
     <link rel="stylesheet" href="styles.php"/>
 </head>
 <body id="home">
+<?php
+    session_start();
+?>
 <div id="header">
     <div class="container">
         <ul class="menu_top">
             <li><a href="mainPage.php">Home</a></li>
-            <li><a href="about.php">About us</a></li>
+            <li><a href="custAppt.php">Consultation</a></li>
         </ul>
     </div>
 </div>

@@ -6,11 +6,35 @@
     <link rel="stylesheet" href="styles.php"/>
 </head>
 <body id="home">
+<?php
+session_start();
+
+$connection=mysqli_connect("localhost","root","","arvessa");
+// Check connection
+if (mysqli_connect_errno($connection))
+{
+    echo "Failed to connect to MySQL: " . mysqli_connect_error();
+}
+
+$customerID = mysqli_query($connection, "SELECT MAX(Customer_ID) AS High_ID FROM Customer");
+$highID = mysqli_fetch_array($customerID);
+
+if( isset( $_SESSION['counter'] ) ) {
+    $_SESSION['counter'] += 1;
+}else {
+    $_SESSION['counter'] = 1;
+    $_SESSION['ID'] = $highID['High_ID'] + 1;
+}
+
+$msg = "You have visited this page ".  $_SESSION['counter'];
+$msg .= "in this session.";
+?>
+
 <div id="header">
     <div class="container">
         <ul class="menu_top">
             <li><a href="mainPage.php">Home</a></li>
-            <li><a href="about.php">About us</a></li>
+            <li><a href="custAppt.php">Consultation</a></li>
         </ul>
     </div>
 </div>
@@ -74,6 +98,8 @@
         <span id="popular_heading">Most Popular</span>
         <Table class="product-table", cellspacing="10">
             <?php
+            echo $msg;
+            echo $_SESSION['ID'];
             $connection=mysqli_connect("localhost","root","","arvessa");
             // Check connection
             if (mysqli_connect_errno($connection))

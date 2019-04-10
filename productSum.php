@@ -12,6 +12,7 @@
 </head>
 <body id="home">
 <?php
+session_start();
 $barcode = $_GET['barcode'];
 $connection=mysqli_connect("localhost","root","","arvessa");
 // Check connection
@@ -19,11 +20,9 @@ if (mysqli_connect_errno($connection))
 {
     echo "Failed to connect to MySQL: " . mysqli_connect_error();
 }
-$customerID = mysqli_query($connection, "SELECT MAX(Customer_ID) AS High_ID FROM Customer");
+//$customerID = mysqli_query($connection, "SELECT MAX(Customer_ID) AS High_ID FROM Customer");
 $product = mysqli_query($connection, "SELECT * FROM Product_Online WHERE Barcode ='$barcode'");
 $row = mysqli_fetch_array($product);
-$highID = mysqli_fetch_array($customerID);
-$newID = Null;
 //echo $newID;
 
 
@@ -35,19 +34,26 @@ $newID = Null;
 if (isset($_POST['submit'])){
     $quantity= $_POST['quantity'];
     $barcode = $row['Barcode'];
-    $newID= $highID['High_ID'] + 1;
-    $sql1 = "INSERT INTO  Customer(Customer_ID) VALUES ('" . $newID . "')";
-    $sql = "INSERT INTO  Cart ( Customer_ID, Barcode, Quantity) VALUES ('" . $newID . "','" . $barcode . "','" . $quantity . "' )";
+    $price = $row['Price'] * $quantity;
+    $id = $_SESSION['ID'];
+    //$sql1 = "INSERT INTO  Customer(Customer_ID) VALUES ('" . $id . "') WHERE NOT EXISTS (SELECT Customer_ID FROM Customer WHERE Customer_ID = $id)";
+    $sql1 = "INSERT IGNORE INTO  Customer(Customer_ID) VALUES ('" . $id . "')";
 
     if (!mysqli_query($connection,$sql1))
     {
         die('Error: ' . mysqli_error($connection));
     }
 
+    $sql = "INSERT INTO  Cart ( Customer_ID, Barcode, CQuantity, CPrice) VALUES ('" . $_SESSION['ID'] . "','" . $barcode . "','" . $quantity . "', '" . $price . "' )";
+
+
+
     if (!mysqli_query($connection,$sql))
     {
         die('Error: ' . mysqli_error($connection));
     }
+}
+
 
     //echo "<script>alert('Success!');</script>";
 
@@ -75,18 +81,13 @@ if (isset($_POST['submit'])){
 //                        }
 //                    });
 //            </script>
-
-
-}
-
-
 ?>
 
 <div id="header">
     <div class="container">
         <ul class="menu_top">
             <li><a href="mainPage.php">Home</a></li>
-            <li><a href="about.php">About us</a></li>
+            <li><a href="custAppt.php">Consultation</a></li>
         </ul>
     </div>
 </div>
@@ -102,8 +103,7 @@ if (isset($_POST['submit'])){
         <ul class="menu_bottom">
             <li><?php echo
                     "<a href="
-                        ."checkout.php?id="
-                        .$newID
+                        ."checkout.php?"
                         .">"
                          ."Cart"
                          ."</a>"?></li>

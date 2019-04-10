@@ -8,20 +8,26 @@
 </head>
 <body id="home">
 <?php
-    $customerID = $_GET['id'];
+    session_start();
+    //$customerID = $_GET['id'];
+    $customerID = $_SESSION['ID'];
     $connection=mysqli_connect("localhost","root","","arvessa");
     // Check connection
     if (mysqli_connect_errno($connection))
     {
         echo "Failed to connect to MySQL: " . mysqli_connect_error();
     }
+
     $result = mysqli_query($connection, "SELECT * FROM Cart AS C, Product_Online AS PO WHERE C.Customer_ID ='$customerID' AND PO.Barcode = C.Barcode ");
+    //$sumPrice2 =mysqli_query($connection,  "WITH Quantity_Price(CQuantity, Price) AS (SELECT CQuantity, Price FROM Cart As C, Product_Online AS PO WHERE C.Customer_ID ='$customerID' AND PO.Barcode = C.Barcode) SELECT Price FROM Quantity_Price AS Sum_Price");
+    $sumPrice = mysqli_query($connection, "SELECT SUM(CPrice) AS Sum_Price FROM Cart AS C, Product_Online AS PO WHERE C.Customer_ID ='$customerID' AND PO.Barcode = C.Barcode");
+    //$sumPrice = mysqli_query($connection, "SELECT SUM(Price) AS Sum_Price FROM Product_Online");
 ?>
 <div id="header">
     <div class="container">
         <ul class="menu_top">
             <li><a href="mainPage.php">Home</a></li>
-            <li><a href="about.php">About us</a></li>
+            <li><a href="custAppt.php">Consultation</a></li>
         </ul>
     </div>
 </div>
@@ -105,8 +111,17 @@
                         . $row['Name']
                         . "</td>"
                         . "<td>"
-                        . $row['Price']
+                        . $row['CQuantity']
+                        . "</td>"
+                        . "<td>"
+                        . $row['CPrice']
                         .".00$"
+                        . "</td>"
+                        . "<td>"
+                        . "<form><input value='Remove' name="
+                        .  $row['Barcode']
+                        .  ">"
+                        . "</form>"
                         . "</td>"
                         . "</tr>";
                     }
@@ -119,21 +134,27 @@
         </div>
     </div>
     <div id="order_summary">
+        <?php
+            $subtotal = mysqli_fetch_array($sumPrice);
+            $tax = $subtotal['Sum_Price'] * 0.05;
+            $total = $subtotal['Sum_Price'] + $tax;
+        ?>
+
         <table id="summary">
             <tr>
                 <th>Order Summary</th>
             </tr>
             <tr>
                 <td>Merchandise Subtotal</td>
-                <td>Amount</td>
+                <td><?php echo $subtotal['Sum_Price']?></td>
             </tr>
             <tr>
                 <td>GST/HST</td>
-                <td>Amount</td>
+                <td><?php echo $tax?></td>
             </tr>
             <tr>
                 <td>Estimated total</td>
-                <td>Amount</td>
+                <td><?php echo $total?></td>
             </tr>
         </table>
         <button>Checkout</button>
@@ -263,9 +284,14 @@
     #basket_items table {
         width:100%;
         margin-top:20px;
+        display: flex;
 
     }
-
+    #basket_items table td, th{
+        width:200px;
+        margin-top:20px;
+        text-align: center;
+    }
 
     .page-content {
         min-height:400px;
@@ -283,10 +309,6 @@
         padding: 12px;
     }
 
-    #basket_items {
-
-    }
-
     #basket_list {
         flex-direction: column;
         border: 3px solid gainsboro;
@@ -294,6 +316,20 @@
         width: 70%;
 
      }
+
+    #basket_items input {
+        background-color: black;
+        color: white;
+        border-radius: 5px;
+        border: black;
+        padding: 0;
+        font-size: 12px;
+        text-transform: uppercase;
+        margin: 5px;
+        height: 40px;
+        text-align: center;
+
+    }
 
     #order_summary {
         border: 3px solid gainsboro;
@@ -311,6 +347,7 @@
     #summary td, th{
         padding: 12px;
         text-align: left;
+
     }
 
     #summary th {
@@ -327,6 +364,7 @@
         text-transform: uppercase;
         margin: 10px;
         height: 40px;
+        width:80%;
 
     }
 
