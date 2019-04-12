@@ -63,12 +63,12 @@ if (isset($_POST['submit'])){
     $price = $row['Price'] * $quantity;
     $id = $_SESSION['cid'];
     //$sql1 = "INSERT INTO  Customer(Customer_ID) VALUES ('" . $id . "') WHERE NOT EXISTS (SELECT Customer_ID FROM Customer WHERE Customer_ID = $id)";
-    $sql1 = "INSERT IGNORE INTO  Customer(Customer_ID) VALUES ('" . $id . "')";
-
-    if (!mysqli_query($connection,$sql1))
-    {
-        die('Error: ' . mysqli_error($connection));
-    }
+//    $sql1 = "INSERT IGNORE INTO  Customer(Customer_ID) VALUES ('" . $id . "')";
+//
+//    if (!mysqli_query($connection,$sql1))
+//    {
+//        die('Error: ' . mysqli_error($connection));
+//    }
 
     $sql = "INSERT INTO  Cart ( Customer_ID, Barcode, CQuantity, CPrice) VALUES ('$id','" . $barcode . "','" . $quantity . "', '" . $price . "' )";
 
@@ -115,7 +115,14 @@ if (isset($_POST['submit'])){
     <div class="container">
         <ul class="menu_top">
             <li><a href="mainPage.php">Home</a></li>
-            <li><a href="custAppt.php">Consultation</a></li>
+            <?php
+            if (isset( $_SESSION['cid'])) {
+                echo "<li>"
+                    . "<a href="
+                    . "custAppt.php>Consultation"
+                    . "</a>"
+                    . "</li>";
+            }?>
         </ul>
     </div>
 </div>
@@ -129,13 +136,15 @@ if (isset($_POST['submit'])){
     <div id="site_name">Arvessa</div>
     <div id="icons">
         <ul class="menu_bottom">
-            <li><?php echo
-                    "<a href="
-                        ."checkout.php?"
-                        .">"
-                         ."Cart"
-                         ."</a>"?></li>
-            <li><a href="profile.php">Profile</a></li>
+            <li><a href="checkout.php">Cart</a></li>
+            <?php
+            if (isset( $_SESSION['cid'])) {
+                echo "<li>"
+                    . "<a href="
+                    . "customerAccountInfo.php>Profile"
+                    . "</a>"
+                    . "</li>";
+            }?>
         </ul>
     </div>
 </div>

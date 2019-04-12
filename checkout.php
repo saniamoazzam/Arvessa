@@ -49,7 +49,14 @@
     <div class="container">
         <ul class="menu_top">
             <li><a href="mainPage.php">Home</a></li>
-            <li><a href="custAppt.php">Consultation</a></li>
+            <?php
+            if (isset( $_SESSION['cid'])) {
+                echo "<li>"
+                    . "<a href="
+                    . "custAppt.php>Consultation"
+                    . "</a>"
+                    . "</li>";
+            }?>
         </ul>
     </div>
 </div>
@@ -64,7 +71,14 @@
     <div id="icons">
         <ul class="menu_bottom">
             <li><a href="#">Cart</a></li>
-            <li><a href="profile.php">Profile</a></li>
+            <?php
+            if (isset( $_SESSION['cid'])) {
+                echo "<li>"
+                    . "<a href="
+                    . "customerAccountInfo.php>Profile"
+                    . "</a>"
+                    . "</li>";
+            }?>
         </ul>
     </div>
 </div>
@@ -376,7 +390,7 @@
         font-size: 20px;
     }
 
-    #order_summary button {
+    #order_summary input {
         background-color: black;
         color: white;
         border-radius: 5px;

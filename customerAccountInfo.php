@@ -9,8 +9,14 @@
 <div id="header">
     <div class="container">
         <ul class="menu_top">
-            <li><a href="mainPage.php">Home</a></li>
-            <li><a href="about.php">About us</a></li>
+            <li><a href="mainPage.php">Home</a></li><?php
+            if (isset( $_SESSION['cid'])) {
+                echo "<li>"
+                    . "<a href="
+                    . "custAppt.php>Consulation"
+                    . "</a>"
+                    . "</li>";
+            }?>
         </ul>
     </div>
 </div>
@@ -25,7 +31,14 @@
     <div id="icons">
         <ul class="menu_bottom">
             <li><a href="cart.php">Cart</a></li>
-            <li><a href="profile.php">Profile</a></li>
+            <?php
+            if (isset( $_SESSION['cid'])) {
+                echo "<li>"
+                    . "<a href="
+                    . "customerAccountInfo.php>Profile"
+                    . "</a>"
+                    . "</li>";
+            }?>
         </ul>
     </div>
 </div>

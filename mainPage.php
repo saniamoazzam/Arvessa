@@ -18,26 +18,33 @@ if (mysqli_connect_errno($connection))
 
 //echo "Favorite color is " . $_SESSION['cid'] . ".<br>";
     
-if (!isset($_SESSION['cid'])){    
-$customerID = mysqli_query($connection, "SELECT MAX(Customer_ID) AS High_ID FROM Customer");
-$highID = mysqli_fetch_array($customerID);
+if (!isset($_SESSION['cid'])){
+    if (!isset($_SESSION['ID'])) {
+        $customerID = mysqli_query($connection, "SELECT MAX(Customer_ID) AS High_ID FROM Customer");
+        $highID = mysqli_fetch_array($customerID);
 
-if( isset( $_SESSION['counter'] ) ) {
-    $_SESSION['counter'] += 1;
-}else {
-    $_SESSION['counter'] = 1;
-    $_SESSION['ID'] = $highID['High_ID'] + 1;
+        $_SESSION['ID'] = $highID['High_ID'] + 1;
+        $id = $_SESSION['ID'];
+        $sql1 = "INSERT IGNORE INTO  Customer(Customer_ID) VALUES ('" . $id . "')";
+        if (!mysqli_query($connection, $sql1)) {
+            die('Error: ' . mysqli_error($connection));
+        }
+    }
 }
-
-$msg = "You have visited this page ".  $_SESSION['counter'];
-$msg .= "in this session.";}
 ?>
 
 <div id="header">
     <div class="container">
         <ul class="menu_top">
             <li><a href="mainPage.php">Home</a></li>
-            <li><a href="custAppt.php">Consultation</a></li>
+            <?php
+            if (isset( $_SESSION['cid'])) {
+                echo "<li>"
+                    . "<a href="
+                    . "custAppt.php>Consultation"
+                    . "</a>"
+                    . "</li>";
+            }?>
         </ul>
     </div>
 </div>
@@ -52,7 +59,14 @@ $msg .= "in this session.";}
     <div id="icons">
         <ul class="menu_bottom">
             <li><a href="checkout.php">Cart</a></li>
-            <li><a href="profile.php">Profile</a></li>
+            <?php
+            if (isset( $_SESSION['cid'])) {
+                echo "<li>"
+                    . "<a href="
+                    . "customerAccountInfo.php>Profile"
+                    . "</a>"
+                    . "</li>";
+            }?>
         </ul>
     </div>
 </div>
@@ -103,7 +117,7 @@ $msg .= "in this session.";}
             <?php
             //echo $msg;
             //echo $_SESSION['ID'];
-            $connection=mysqli_connect("localhost","root","gurik123","arvessa");
+            $connection=mysqli_connect("localhost","root",$_SESSION['rootpassword'],"arvessa");
             // Check connection
             if (mysqli_connect_errno($connection))
             {
