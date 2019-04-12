@@ -6,6 +6,15 @@
     <link rel="stylesheet" href="stylesCS.php"/>
 </head>
 <body id="home">
+<?php
+$connection=mysqli_connect("localhost","root","","arvessa");
+// Check connection
+if (mysqli_connect_errno($connection))
+{
+    echo "Failed to connect to MySQL: " . mysqli_connect_error();
+}
+$result1 = mysqli_query($connection, "SELECT * FROM Consults AS C");
+?>
 <div id="header">
     <div class="container">
         <ul class="menu_top">
@@ -38,6 +47,7 @@
 </div>
 <div class="page-content">
     <article>
+        <p><strong>Consultant: Layla Mikel </strong><br> <br> </p>
         <div>
             <table>
                 <tr>
@@ -47,46 +57,32 @@
                     <th>Cancel?</th>
                 </tr>
                 <tr>
-                    <td>Lava Girl</td>
-                    <td>15 April 12:00 PM</td>
-                    <td>Eye Makeup</td>
-                    <td><a href="Cancel">Cancel</a> </td>
-                </tr>
-                <tr>
-                    <td>Taylor Ki</td>
-                    <td>15 April 1:00 PM</td>
-                    <td>Skin care</td>
-                    <td><a href="Cancel">Cancel</a> </td>
-                </tr>
-                <tr>
-                    <td>Katie Mann</td>
-                    <td>15 April 5:00 PM</td>
-                    <td>Hair Care</td>
-                    <td><a href="Cancel">Cancel</a> </td>
-                </tr>
-                <tr>
-                    <td>Zach Efron</td>
-                    <td>16 April 10:00 AM</td>
-                    <td>Hair Care</td>
-                    <td><a href="Cancel">Cancel</a> </td>
-                </tr>
-                <tr>
-                    <td>Lilly Sprouse</td>
-                    <td>17 April 1:00 PM</td>
-                    <td>Eye Makeup</td>
-                    <td><a href="Cancel">Cancel</a> </td>
-                </tr>
-                <tr>
-                    <td>Dobra Nann</td>
-                    <td>17 April 2:00 PM</td>
-                    <td>Full Face Makeup</td>
-                    <td><a href="Cancel">Cancel</a> </td>
-                </tr>
-                <tr>
-                    <td>Zedian Apa</td>
-                    <td>19 April 3:00 PM</td>
-                    <td>Bold Lip Makeup</td>
-                    <td><a href="Cancel">Cancel</a> </td>
+                    <?php
+                    if (mysqli_num_rows($result1) > 0) {
+                        echo "<tr>";
+                        while ($row = mysqli_fetch_array($result1)) {
+                            if($row['Type'] != NULL) {
+                                echo
+                                    "<tr>"
+                                    . "<td>"
+                                    . $row['Customer_ID']
+                                    . "</td>"
+                                    . "<td>"
+                                    . $row['Date']
+                                    ."<br>"
+                                    . $row['Time']
+                                    . "</td>"
+                                    . "<td>"
+                                    . $row['Type']
+                                    . "</td>"
+                                    . "<td>"
+                                    . "<a href=\"#\">Cancel</a>"
+                                    . "</td>"
+                                    . "</tr>";
+                            }
+                        }
+                    }
+                    ?>
                 </tr>
             </table>
         </div>
