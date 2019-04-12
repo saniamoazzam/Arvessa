@@ -47,10 +47,21 @@ while($row = $res->fetch_assoc()) {
     
     $nom = mysqli_query($conn, "SELECT MAX(Transaction_No) AS High_No FROM Purchases_Online");
     $high = mysqli_fetch_array($nom);
-    $transactionno = $high['High_No'] + 1;  
+    $transactionno = $high['High_No'] + 1; 
+    
+    $sql = "SELECT Quantity FROM Product_Online WHERE Barcode='$barcode'";
+    $m = $conn->query($sql);
+    while($row = $m->fetch_assoc()) {
+    $originalquantity= $row['Quantity'];
+    }
+    
+    $newquantity=$originalquantity-$quantity;
     
     $sql = "INSERT INTO  Purchases_Online (Customer_ID, Barcode, Address, Quantity, Transaction_No, Estimated_Date, Ship_Address) VALUES ('$id', '$barcode', '$warehouseaddress', '$quantity','$transactionno', '$estdate', '$shipaddress')";
     $re = $conn->query($sql);
+    
+    $sql = "UPDATE Product_Online SET Quantity='$newquantity' WHERE Barcode='$barcode'";
+    $o = $conn->query($sql);
 }}
 
 $sql = "DELETE FROM Cart WHERE Customer_ID='$id'";

@@ -33,7 +33,20 @@ $y = $today['year'];
 $date="$y-$m-$d";
 $estdate=date('Y-m-d', strtotime($date. ' + 5 days'));
 
-$sql = "SELECT CQuantity, Barcode FROM Cart WHERE Customer_ID='$id'";
+$sql = "SELECT Account_No FROM Member WHERE Customer_ID='$id'";
+$w = $conn->query($sql);
+while($row = $w->fetch_assoc()) {
+    $accountid= $row['Account_No'];
+}
+
+$sql = "SELECT Total_Points, Current_Points FROM Points_Card WHERE Account_No='$accountid'";
+$q = $conn->query($sql);
+while($row = $q->fetch_assoc()) {
+    $totalpoints= $row['Total_Points'];
+    $currentpoints= $row['Current_Points'];
+}
+
+$sql = "SELECT CQuantity, Barcode, CPrice FROM Cart WHERE Customer_ID='$id'";
 $res = $conn->query($sql);
 
 if($res->num_rows <1){
@@ -44,6 +57,20 @@ else{
 while($row = $res->fetch_assoc()) {
     $quantity= $row['CQuantity'];
     $barcode= $row['Barcode'];
+    $price= $row['CPrice'];
+    
+    $totalpoints= $totalpoints + (($price)*5);
+    $currentpoints= $currentpoints + (($price)*5);
+    //echo "Favorite color is " . $newtotalpoints . ".<br>";
+    //echo "Favorite color is " . $newcurrentpoints . ".<br>";
+    
+    $sql = "SELECT Quantity FROM Product_Online WHERE Barcode='$barcode'";
+    $m = $conn->query($sql);
+    while($row = $m->fetch_assoc()) {
+    $originalquantity= $row['Quantity'];
+    }
+    
+    $newquantity=$originalquantity-$quantity;
     
     $nom = mysqli_query($conn, "SELECT MAX(Transaction_No) AS High_No FROM Purchases_Online");
     $high = mysqli_fetch_array($nom);
@@ -51,6 +78,13 @@ while($row = $res->fetch_assoc()) {
     
     $sql = "INSERT INTO  Purchases_Online (Customer_ID, Barcode, Address, Quantity, Transaction_No, Estimated_Date, Ship_Address) VALUES ('$id', '$barcode', '$warehouseaddress', '$quantity','$transactionno', '$estdate', '$shipaddress')";
     $re = $conn->query($sql);
+    
+    $sql = "UPDATE Points_Card SET Total_Points='$totalpoints', Current_Points='$currentpoints' WHERE Account_No='$accountid'";
+    $y = $conn->query($sql);
+    
+    $sql = "UPDATE Product_Online SET Quantity='$newquantity' WHERE Barcode='$barcode'";
+    $o = $conn->query($sql);
+
 }}
 
 $sql = "DELETE FROM Cart WHERE Customer_ID='$id'";
