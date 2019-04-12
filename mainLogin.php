@@ -8,7 +8,7 @@
 <body id="home">
 <?php
   session_start();
-    $_SESSION['rootpassword']="";   
+    $_SESSION['rootpassword']="gurik123";   
 ?>
 <div id="header">
     <div class="container">
