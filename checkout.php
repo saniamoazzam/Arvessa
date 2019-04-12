@@ -10,8 +10,12 @@
 <?php
     session_start();
     //$customerID = $_GET['id'];
+    
+    if(!isset($_SESSION['cid'])){
     $customerID = $_SESSION['ID'];
-    $connection=mysqli_connect("localhost","root","","arvessa");
+    
+    //echo "You have visited this page ".  $_SESSION['ID'];
+    $connection=mysqli_connect("localhost","root",$_SESSION['rootpassword'],"arvessa");
     // Check connection
     if (mysqli_connect_errno($connection))
     {
@@ -21,7 +25,25 @@
     $result = mysqli_query($connection, "SELECT * FROM Cart AS C, Product_Online AS PO WHERE C.Customer_ID ='$customerID' AND PO.Barcode = C.Barcode ");
     //$sumPrice2 =mysqli_query($connection,  "WITH Quantity_Price(CQuantity, Price) AS (SELECT CQuantity, Price FROM Cart As C, Product_Online AS PO WHERE C.Customer_ID ='$customerID' AND PO.Barcode = C.Barcode) SELECT Price FROM Quantity_Price AS Sum_Price");
     $sumPrice = mysqli_query($connection, "SELECT SUM(CPrice) AS Sum_Price FROM Cart AS C, Product_Online AS PO WHERE C.Customer_ID ='$customerID' AND PO.Barcode = C.Barcode");
-    //$sumPrice = mysqli_query($connection, "SELECT SUM(Price) AS Sum_Price FROM Product_Online");
+    //$sumPrice = mysqli_query($connection, "SELECT SUM(Price) AS Sum_Price FROM Product_Online");}
+    }
+    else{
+       $customerID = $_SESSION['cid'];
+    
+    //echo "You have visited this page ".  $_SESSION['ID'];
+    $connection=mysqli_connect("localhost","root",$_SESSION['rootpassword'],"arvessa");
+    // Check connection
+    if (mysqli_connect_errno($connection))
+    {
+        echo "Failed to connect to MySQL: " . mysqli_connect_error();
+    }
+
+    $result = mysqli_query($connection, "SELECT * FROM Cart AS C, Product_Online AS PO WHERE C.Customer_ID ='$customerID' AND PO.Barcode = C.Barcode ");
+    //$sumPrice2 =mysqli_query($connection,  "WITH Quantity_Price(CQuantity, Price) AS (SELECT CQuantity, Price FROM Cart As C, Product_Online AS PO WHERE C.Customer_ID ='$customerID' AND PO.Barcode = C.Barcode) SELECT Price FROM Quantity_Price AS Sum_Price");
+    $sumPrice = mysqli_query($connection, "SELECT SUM(CPrice) AS Sum_Price FROM Cart AS C, Product_Online AS PO WHERE C.Customer_ID ='$customerID' AND PO.Barcode = C.Barcode");
+    //$sumPrice = mysqli_query($connection, "SELECT SUM(Price) AS Sum_Price FROM Product_Online"); 
+    $_SESSION['sumprice']=$sumPrice;    
+    }
 ?>
 <div id="header">
     <div class="container">
@@ -157,7 +179,7 @@
                 <td><?php echo $total?></td>
             </tr>
         </table>
-        <button>Checkout</button>
+        <input id="Checkout" type="button" value="Checkout" onclick="window.location.href='checkoutCheckIfSignedIn.php'">
     </div>
 
 

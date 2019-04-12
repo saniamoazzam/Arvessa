@@ -6,126 +6,40 @@
     <link rel="stylesheet" href="styles.php"/>
 </head>
 <body id="home">
-<?php
-    session_start();
-?>
 <div id="header">
     <div class="container">
         <ul class="menu_top">
-            <li><a href="mainPage.php">Home</a></li>
-            <li><a href="custAppt.php">Consultation</a></li>
         </ul>
     </div>
 </div>
 
 <div id="banner">
     <div id="search_container">
-        <form action="search.php" method="post">
-            <input type="text" name="search" placeholder="Search..">
-        </form>
     </div>
     <div id="site_name">Arvessa</div>
     <div id="icons">
         <ul class="menu_bottom">
-            <li><a href="checkout.php">Cart</a></li>
-            <li><a href="profile.php">Profile</a></li>
         </ul>
     </div>
 </div>
 
-<div id="product">
-    <div class="dropdown">
-        <button class="dropbtn">Make Up</button>
-        <div class="dropdown-content">
-            <a href="search.php?category=Face">Face</a>
-            <a href="search.php?category=Cheek">Cheek</a>
-            <a href="search.php?category=Eye">Eye</a>
-            <a href="search.php?category=Lip">Lip</a>
-        </div>
-    </div>
-    <div class="dropdown">
-        <button class="dropbtn">Skin Care</button>
-        <div class="dropdown-content">
-            <a href="search.php?category=Moisturizers">Moisturizers</a>
-            <a href="search.php?category=Cleaners">Cleaners</a>
-            <a href="search.php?category=Masks">Masks</a>
-            <a href="search.php?category=Eye Care">Eye Care</a>
-            <a href="search.php?category=Sun Care">Sun Care</a>
-        </div>
-    </div>
-    <div class="dropdown">
-        <button class="dropbtn">Fragrance</button>
-        <div class="dropdown-content">
-            <a href="search.php?category=Woman">Woman</a>
-            <a href="search.php?category=Man">Man</a>
-        </div>
-    </div>
-    <div class="dropdown">
-        <button class="dropbtn">Other</button>
-        <div class="dropdown-content">
-            <a href="search.php?category=Shampoo">Shampoo & Conditioner</a>
-            <a href="search.php?category=Hair Tools">Hair Tools</a>
-            <a href="search.php?category=Makeup Brushes">Makeup Brushes</a>
-            <a href="search.php?category=Accessories">Accessories</a>
-        </div>
-    </div>
-
-</div>
-
 <div class="page-content">
+    <?php
+    ?>
     <article>
-        <span id="popular_heading">Search Result</span>
-        <Table class="product-table", cellspacing="10">
-            <?php
-            $category = $_GET['category'];
-            $connection=mysqli_connect("localhost","root",$_SESSION['rootpassword'],"arvessa");
-            // Check connection
-            if (mysqli_connect_errno($connection))
-            {
-                echo "Failed to connect to MySQL: " . mysqli_connect_error();
-            }
-            $result = mysqli_query($connection, "SELECT * FROM Product_Online WHERE Category ='$category'");
-            //echo $category;
-            //echo $result;
-            $counter = 1;
-            if (mysqli_num_rows($result) > 0) {
-                echo "<tr>";
-                while ($row = mysqli_fetch_array($result)) {
-                    if ($counter % 3 == 1) {
-                        echo "<tr></tr>";
-                    }
-                    echo
-                        "<td>"
-                        . "<a href="
-                        ."productSum.php?barcode="
-                        .$row['Barcode']
-                        .">"
-                        . "<img src="
-                        . $row['Picture']
-                        . "'width=180 height = 180/> "
-                        . "</a>"
-                        . "<br>"
-                        . "<span>"
-                        . $row['Name']
-                        . "</span>"
-                        . "<td>";
-
-                    $counter++;
-                }
-
-                echo "</tr>";
-            } else {
-                echo "No Matching records are found!";
-            }
-            ?>
-        </Table>
+        <form action="verifyUser.php" method="post">
+            Customer ID: <input type="text" name="EmailAddress" style="width:200px" .....><br>
+            <input type="submit" value="Login">
+</form>
+    </div>
+</div>
     </article>
 </div>
 
 <div id="footer">
     <div class="container">
         <p id="footer_text">Copyright 2019 INC</div>
-</div>
+    </div>
 </div>
 <style>
     * {
@@ -243,11 +157,12 @@
 
 
     .page-content {
-        min-height:400px;
+        min-height:500px;
         margin: 0px;
         padding: 0px;
-        justify-content: center;
-        align-items: center;
+        padding-left: 150px;
+        justify-content: left;
+        align-items: left;
         display: flex;
         flex-flow: row;
     }
@@ -274,7 +189,13 @@
         display:flex;
 
     }
-
+    
+    #submit{
+        width: 35%;
+        font-size: 20px;
+        padding:2%;
+        align-content: center
+    }
 
     #search_container input[type=text] {
         padding: 6px;
@@ -298,11 +219,10 @@
         background: #ccc;
     }
 
-    #product {
-        padding-top: 20px;
-        width: 60%;
-        display: flex;
-        margin: 0 auto;
+    #FirstName{
+        width: 35%;
+        font-size: 50px;
+        padding:2%;
     }
 
     .dropdown {

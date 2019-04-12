@@ -6,38 +6,11 @@
     <link rel="stylesheet" href="styles.php"/>
 </head>
 <body id="home">
-<?php
-session_start();
-
-$connection=mysqli_connect("localhost","root",$_SESSION['rootpassword'],"arvessa");
-// Check connection
-if (mysqli_connect_errno($connection))
-{
-    echo "Failed to connect to MySQL: " . mysqli_connect_error();
-}
-
-//echo "Favorite color is " . $_SESSION['cid'] . ".<br>";
-    
-if (!isset($_SESSION['cid'])){    
-$customerID = mysqli_query($connection, "SELECT MAX(Customer_ID) AS High_ID FROM Customer");
-$highID = mysqli_fetch_array($customerID);
-
-if( isset( $_SESSION['counter'] ) ) {
-    $_SESSION['counter'] += 1;
-}else {
-    $_SESSION['counter'] = 1;
-    $_SESSION['ID'] = $highID['High_ID'] + 1;
-}
-
-$msg = "You have visited this page ".  $_SESSION['counter'];
-$msg .= "in this session.";}
-?>
-
 <div id="header">
     <div class="container">
         <ul class="menu_top">
             <li><a href="mainPage.php">Home</a></li>
-            <li><a href="custAppt.php">Consultation</a></li>
+            <li><a href="about.php">About us</a></li>
         </ul>
     </div>
 </div>
@@ -51,99 +24,30 @@ $msg .= "in this session.";}
     <div id="site_name">Arvessa</div>
     <div id="icons">
         <ul class="menu_bottom">
-            <li><a href="checkout.php">Cart</a></li>
+            <li><a href="cart.php">Cart</a></li>
             <li><a href="profile.php">Profile</a></li>
         </ul>
     </div>
 </div>
 
-<div id="product">
-    <div class="dropdown">
-        <button class="dropbtn">Make Up</button>
-        <div class="dropdown-content">
-            <a href="search.php?category=Face">Face</a>
-            <a href="search.php?category=Cheek">Cheek</a>
-            <a href="search.php?category=Eye">Eye</a>
-            <a href="search.php?category=Lip">Lip</a>
-        </div>
-    </div>
-    <div class="dropdown">
-        <button class="dropbtn">Skin Care</button>
-        <div class="dropdown-content">
-            <a href="search.php?category=Moisturizers">Moisturizers</a>
-            <a href="search.php?category=Cleaners">Cleaners</a>
-            <a href="search.php?category=Masks">Masks</a>
-            <a href="search.php?category=Eye Care">Eye Care</a>
-            <a href="search.php?category=Sun Care">Sun Care</a>
-        </div>
-    </div>
-    <div class="dropdown">
-        <button class="dropbtn">Fragrance</button>
-        <div class="dropdown-content">
-            <a href="search.php?category=Woman">Woman</a>
-            <a href="search.php?category=Man">Man</a>
-        </div>
-    </div>
-    <div class="dropdown">
-        <button class="dropbtn">Other</button>
-        <div class="dropdown-content">
-            <a href="search.php?category=Shampoo">Shampoo & Conditioner</a>
-            <a href="search.php?category=Hair Tools">Hair Tools</a>
-            <a href="search.php?category=Makeup Brushes">Makeup Brushes</a>
-            <a href="search.php?category=Accessories">Accessories</a>
-        </div>
-    </div>
-
-</div>
-
 <div class="page-content">
+    <?php
+    
+    ?>
     <article>
-        <span id="popular_heading">Most Popular</span>
-        <Table class="product-table", cellspacing="10">
-            <?php
-            //echo $msg;
-            //echo $_SESSION['ID'];
-            $connection=mysqli_connect("localhost","root","gurik123","arvessa");
-            // Check connection
-            if (mysqli_connect_errno($connection))
-            {
-                echo "Failed to connect to MySQL: " . mysqli_connect_error();
-            }
-            $result = mysqli_query($connection, "SELECT * FROM Product_Online");
-            //echo $category;
-            //echo $result;
-            $counter = 1;
-            if (mysqli_num_rows($result) > 0) {
-                echo "<tr>";
-                while ($row = mysqli_fetch_array($result)) {
-                    if ($counter % 3 == 1) {
-                        echo "<tr></tr>";
-                    }
-                    echo
-                        "<td>"
-                        . "<a href="
-                        ."productSum.php?barcode="
-                        .$row['Barcode']
-                        .">"
-                        . "<img src="
-                        . $row['Picture']
-                        . "'width=180 height = 180/> "
-                        . "</a>"
-                        . "<br>"
-                        . "<span>"
-                        . $row['Name']
-                        . "</span>"
-                        . "<td>";
-
-                    $counter++;
-                }
-
-                echo "</tr>";
-            } else {
-                echo "No Matching records are found!";
-            }
-            ?>
-        </Table>
+        <form action="createAccountDB.php" method="post">
+            First Name: <input type="text" name="FirstName" style="width:200px" .....><br>
+            Last Name: <input type="text" name="LastName" style="width:200px" .....><br>
+            Email Address: <input type="text" name="EmailAddress" style="width:200px" .....><br>
+            Billing Address: <input type="text" name="BillingAddress" style="width:200px" .....><br>
+            Card Number: <input type="text" name="CardNumber" style="width:200px" .....><br>
+            Card Expiry Date: <input type="text" name="CardExpiryDate" style="width:200px" .....><br>
+            Card CVC: <input type="text" name="CardCVC" style="width:200px" .....><br>
+            Password: <input type="password" name="Password" style="width:200px" .....><br>
+            <input type="submit" value="Create Account">
+</form>
+    </div>
+</div>
     </article>
 </div>
 
@@ -268,11 +172,12 @@ $msg .= "in this session.";}
 
 
     .page-content {
-        min-height:600px;
+        min-height:500px;
         margin: 0px;
         padding: 0px;
-        justify-content: center;
-        align-items: center;
+        padding-left: 150px;
+        justify-content: left;
+        align-items: left;
         display: flex;
         flex-flow: row;
     }
@@ -299,7 +204,13 @@ $msg .= "in this session.";}
         display:flex;
 
     }
-
+    
+    #submit{
+        width: 35%;
+        font-size: 20px;
+        padding:2%;
+        align-content: center
+    }
 
     #search_container input[type=text] {
         padding: 6px;
@@ -323,11 +234,10 @@ $msg .= "in this session.";}
         background: #ccc;
     }
 
-    #product {
-        padding-top: 20px;
-        width: 60%;
-        display: flex;
-        margin: 0 auto;
+    #FirstName{
+        width: 35%;
+        font-size: 50px;
+        padding:2%;
     }
 
     .dropdown {

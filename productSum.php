@@ -14,7 +14,7 @@
 <?php
 session_start();
 $barcode = $_GET['barcode'];
-$connection=mysqli_connect("localhost","root","","arvessa");
+$connection=mysqli_connect("localhost","root",$_SESSION['rootpassword'],"arvessa");
 // Check connection
 if (mysqli_connect_errno($connection))
 {
@@ -31,6 +31,7 @@ $row = mysqli_fetch_array($product);
 //
 //    }
 
+if(!isset($_SESSION['cid'])){    
 if (isset($_POST['submit'])){
     $quantity= $_POST['quantity'];
     $barcode = $row['Barcode'];
@@ -53,6 +54,33 @@ if (isset($_POST['submit'])){
         die('Error: ' . mysqli_error($connection));
     }
 }
+}
+    
+    else{
+        if (isset($_POST['submit'])){
+    $quantity= $_POST['quantity'];
+    $barcode = $row['Barcode'];
+    $price = $row['Price'] * $quantity;
+    $id = $_SESSION['cid'];
+    //$sql1 = "INSERT INTO  Customer(Customer_ID) VALUES ('" . $id . "') WHERE NOT EXISTS (SELECT Customer_ID FROM Customer WHERE Customer_ID = $id)";
+    $sql1 = "INSERT IGNORE INTO  Customer(Customer_ID) VALUES ('" . $id . "')";
+
+    if (!mysqli_query($connection,$sql1))
+    {
+        die('Error: ' . mysqli_error($connection));
+    }
+
+    $sql = "INSERT INTO  Cart ( Customer_ID, Barcode, CQuantity, CPrice) VALUES ('$id','" . $barcode . "','" . $quantity . "', '" . $price . "' )";
+
+
+
+    if (!mysqli_query($connection,$sql))
+    {
+        die('Error: ' . mysqli_error($connection));
+    }
+    
+}
+    }
 
 
     //echo "<script>alert('Success!');</script>";
