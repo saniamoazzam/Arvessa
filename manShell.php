@@ -39,11 +39,13 @@
 
 <div class="page-content">
     <article>
+        <p><strong>Manager: Emily Taylor</strong><br> <br> </p>
+
         <div class="tabM">
             <button class="tablinks" onclick="openCity(event, 'Purchase')">Purchase</button>
             <button class="tablinks" onclick="openCity(event, 'Return')">Return</button>
             <button class="tablinks" onclick="openCity(event, 'Redeem')">Redeem</button>
-            <button class="tablinks" onclick="openCity(event, 'Store Stock')">Sore Stock</button>
+            <button class="tablinks" onclick="openCity(event, 'Store Stock')" id = "defaultOpen">Store Stock</button>
             <button class="tablinks" onclick="openCity(event, 'Store Information')">Store Information</button>
         </div>
 
@@ -63,7 +65,7 @@
                      Total: $ <input type="text" name="amount"> <br> <br>
                      Card Details: <input> <br> <br>
                      Safety Card: <input> <br> <br>
-                    <button id = "btn" type="executebtn">Execute Purchase</button>
+                    <button class="btns">Execute Purchase</button>
             </div>
         </div>
 
@@ -83,84 +85,173 @@
                     Total: $ <input type="text" name="amount"> <br> <br>
                     Card Details: <input> <br> <br>
                     Safety Card: <input> <br> <br>
-                    <button type="returnbtn">Items to be returned</button>
+                    <button class="btns">Return Items</button>
             </div>
         </div>
 
         <div id="Redeem" class="tabcontent">
+            <?php
+            $connection=mysqli_connect("localhost","root","","arvessa");
+            // Check connection
+            if (mysqli_connect_errno($connection))
+            {
+                echo "Failed to connect to MySQL: " . mysqli_connect_error();
+            }
+            $result = mysqli_query($connection, "SELECT * FROM Rewards");
+            ?>
             <table>
                 <tr>
                     <th>Mini-Product</th>
-                    <th>Points</th>
+                    <th>Points Value</th>
                 </tr>
-                <tr>
-                    <td>Mac mini sample 25C</td>
-                    <td>200</td>
-                </tr>
+                <?php
+                if (mysqli_num_rows($result) > 0) {
+                    echo "<tr>";
+                    while ($row = mysqli_fetch_array($result)) {
+                        echo
+                            "<tr>"
+                            . "<td>"
+                            . $row['Name']
+                            . "</td>"
+                            . "<td>"
+                            . $row['Points_Value']
+                            . "</td>"
+                            . "</tr>";
+                    }
+                }
+                ?>
             </table>
-
             <div id="text" class="text">
                 Total Points: <br> <br>
-                Current Points after redeem: <br> <br>
-                <button id = "btn" type="redeembtn">Redeem</button>
+                Current Points: <br> <br>
+                <button class="btns">Redeem</button>
             </div>
         </div>
 
         <div id="Store Stock" class="tabcontent">
+            <?php
+            $connection=mysqli_connect("localhost","root","","arvessa");
+            // Check connection
+            if (mysqli_connect_errno($connection))
+            {
+                echo "Failed to connect to MySQL: " . mysqli_connect_error();
+            }
+            $result = mysqli_query($connection, "SELECT * FROM Product");
+            ?>
             <table>
                 <tr>
                     <th>Product</th>
-                    <th>Quantity</th>
+                    <th>Quantity Left</th>
+                    <th>Order Quantity</th>
                 </tr>
-                <tr>
-                    <td>Naked 2 Eye Shadow</td>
-                    <td>10</td>
-                </tr>
-                <tr>
-                    <td>Minerals Face Powder (40)</td>
-                    <td>50</td>
-                </tr>
+            <?php
+            if (mysqli_num_rows($result) > 0) {
+                echo "<tr>";
+                while ($row = mysqli_fetch_array($result)) {
+                    echo
+                        "<tr>"
+                        . "<td>"
+                        . $row['Name']
+                        . "</td>"
+                        . "<td>"
+                        . $row['Quantity']
+                        . "</td>"
+                        . "<td>"
+                        . "<input type=\"number\" class=\"quantity\" min=\"0\">"
+                        . "</td>"
+                        . "</tr>";
+                }
+                }
+                ?>
             </table>
-
             <div id="Text" class="text">
-                Total: <br> <br>
-                <button id = "btn" type="stockbtn">Order Stock</button>
+                <button class="btns">Order Stock</button>
             </div>
         </div>
 
         <div id="Store Information" class="tabcontent">
+            <?php
+            $connection=mysqli_connect("localhost","root","","arvessa");
+            // Check connection
+            if (mysqli_connect_errno($connection))
+            {
+                echo "Failed to connect to MySQL: " . mysqli_connect_error();
+            }
+            $result = mysqli_query($connection, "SELECT * FROM Employee");
+            ?>
             <table>
                 <tr>
-                    <th>Employee Details</th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                </tr>
-                <tr>
-                    <th>Name</th>
                     <th>Number</th>
-                    <th>Start Data</th>
+                    <th>Name</th>
+                    <th>Birth Date</th>
+                    <th>Start Date</th>
                     <th>Salary</th>
                     <th></th>
                 </tr>
-                <tr>
-                    <td>Ben Lyn</td>
-                    <td>30018278</td>
-                    <td>15 January 2019</td>
-                    <td>$5000</td>
-                    <td><a href="edit">Edit? </a> <br><a href="fire"> Delete?</a> </td>
-                </tr>
+                <?php
+                if (mysqli_num_rows($result) > 0) {
+                    echo "<tr>";
+                    while ($row = mysqli_fetch_array($result)) {
+                        echo
+                            "<tr>"
+                            . "<td>"
+                            . $row['Employee_No']
+                            . "</td>"
+                            . "<td>"
+                            . $row['First']
+                            . " "
+                            . $row['Last']
+                            . "</td>"
+                            . "<td>"
+                            . $row['Birth_Date']
+                            . "</td>"
+                            . "<td>"
+                            . $row['Start_Date']
+                            . "</td>"
+                            . "<td>"
+                            . $row['Salary']
+                            . "</td>"
+                            . "<td>"
+                            . "<input type=\"submit\" name='editE' value='Edit'> <br><input type=\"submit\" name='deleteE' value='Delete'>"
+                            . "</td>"
+                            . "</tr>";
+                    }
+                }
+                ?>
             </table>
 
             <div id="Text" class="text">
-                    <strong>Hire Employee:</strong> <br> <br>
-                    Full Name <input> <br> <br>
-                    Employee Number: <input> <br> <br>
-                    SIN <input> <br> <br>
-                    Salary: <input> <br> <br>
-                    <button type="hirebtn">Hire</button>
+                <form action="manShell.php" method="post">
+                <strong>Hire Employee:</strong> <br> <br>
+                First Name: <input type="text" name="first"> Last: <input type="text" name="last"> <br> <br>
+                Birth date: <input type = "date" name="birth"> <br> <br>
+                Start date: <input type = "date" name="start"> <br> <br>
+                Salary: <input type="number" name="salary"> <br> <br>
+                <input type="submit" name="submitHIRE" class="btns" value="Hire">
+                </form>
             </div>
+                <?php
+                $connection = mysqli_connect("localhost","root","","arvessa");
+                // Check connection
+                if (mysqli_connect_errno($connection))
+                {
+                    echo "Failed to connect to MySQL: " . mysqli_connect_error();
+                }
+
+                if (isset($_POST['submitHIRE'])) {
+                    $employeeID = mysqli_query($connection, "SELECT MAX(Employee_No) AS HIGH FROM Employee");
+                    $EID = mysqli_fetch_array($employeeID);
+                    $newID = $EID['HIGH'] + 1;
+
+                    $First = $_POST['first'];
+                    $Last = $_POST['last'];
+                    $Birth_Date = $_POST['birth'];
+                    $Start_Date = $_POST['start'];
+                    $Salary = $_POST['salary'];
+
+                    $sql = "INSERT INTO Employee VALUES ('".$newID."','".$First."','".$Last."','".$Birth_Date."','".$Start_Date."','".$Salary."')";
+                }
+                ?>
         </div>
     </article>
 </div>
@@ -184,6 +275,8 @@
         document.getElementById(cityName).style.display = "block";
         evt.currentTarget.className += " active";
     }
+
+    document.getElementById("defaultOpen").click();
 </script>
 
 </body>
