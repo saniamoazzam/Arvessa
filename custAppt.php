@@ -6,6 +6,17 @@
     <link rel="stylesheet" href="stylesCA.php"/>
 </head>
 <body id="home">
+<?php
+$connection=mysqli_connect("localhost","root","","arvessa");
+// Check connection
+if (mysqli_connect_errno($connection))
+{
+    echo "Failed to connect to MySQL: " . mysqli_connect_error();
+}
+$result1 = mysqli_query($connection, "SELECT * FROM Consults AS C");
+$result2 = mysqli_query($connection, "SELECT First, Last FROM Employee AS E, Consults AS Co WHERE E.Employee_No = Co.Employee_No");
+?>
+
 <div id="header">
     <div class="container">
         <ul class="menu_top">
@@ -46,7 +57,9 @@
                 <a href="#">Layla M</a>
                 <a href="#">Ella Brown</a>
             </div>
+        </div>
 
+        <div class = "dropdown">
             <button onclick="dateDrop()" class="dropbtn">Date</button>
             <div id="dateDrop" class="dropdown-content">
                 <a href="#">15 April</a>
@@ -55,7 +68,9 @@
                 <a href="#">18 April</a>
                 <a href="#">19 April</a>
             </div>
+        </div>
 
+        <div class = "dropdown">
             <button onclick="searchConsult()" class="dropbtn">Search</button>
         </div>
 
@@ -63,38 +78,59 @@
             <table>
                 <tr>
                     <th>Consultant</th>
-                    <th>Availability</th>
-                    <th>Book</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Type</th>
+                    <th>Book?</th>
                 </tr>
-                <tr>
-                    <td>Albus Smith</td>
-                    <td>15 April 2:00 PM</td>
-                    <td><a href="#">Book</a></td>
-                </tr>
-                <tr>
-                    <td>Layla M</td>
-                    <td>15 April 3:00 PM</td>
-                    <td><a href="#">Book</a></td>
-                </tr>
-                <tr>
-                    <td>Layla M</td>
-                    <td>15 April 4:00 PM</td>
-                    <td><a href="#">Book</a></td>
-                </tr>
-                <tr>
-                    <td>Ella Brown</td>
-                    <td>15 April 5:00 AM</td>
-                    <td><a href="#">Book</a></td>
-                <tr>
-                    <td>Ella Brown</td>
-                    <td>16 April 9:00 AM</td>
-                    <td><a href="#">Book</a></td>
-                <tr>
-                    <td>Layla M</td>
-                    <td>16 April 9:00 AM</td>
-                    <td><a href="#">Book</a></td>
+                <?php
+                if (mysqli_num_rows($result1) > 0) {
+                    echo "<tr>";
+                    while ($row = mysqli_fetch_array($result1)) {
+                        if($row['Type'] == NULL) {
+                            echo
+                                "<tr>"
+                                . "<td>"
+                                . $row['Employee_No']
+                                . "</td>"
+                                . "<td>"
+                                . $row['Date']
+                                . "</td>"
+                                . "<td>"
+                                . $row['Time']
+                                . "</td>"
+                                . "<td>"
+                                . $row['Type']
+                                . "<select>"
+                                . "<option value=\"makeup\">Make-up</option> <br>"
+                                . "<option value=\"skincare\">Skincare</option>"
+                                . "</select>"
+                                . "</td>"
+                                . "<td>"
+                                . "<form action=\"custAppt.php\" method=\"post\">"
+                                . "<input type=\"submit\" name='book' class='btns' value='Book'> <br>"
+                                . "</form>"
+                                . "</td>"
+                                . "</tr>";
+                        }
+                    }
+                }
+                ?>
                 </tr>
             </table>
+            <?php
+            $connection = mysqli_connect("localhost","root","","arvessa");
+            // Check connection
+            if (mysqli_connect_errno($connection))
+            {
+                echo "Failed to connect to MySQL: " . mysqli_connect_error();
+            }
+
+            if (isset($_POST['book'])) {
+                $sql = "UPDATE CONSULTS SET Customer_ID= 3, Type=Skin-care";
+            }
+
+            ?>
         </div>
     </article>
 </div>
