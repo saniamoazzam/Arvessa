@@ -1,10 +1,10 @@
 <?php
 session_start();
 
-$a=$_POST['cid'];
+$a=$_POST['employee'];
 
 $servername= "localhost";
-$password = $_SESSION['rootpassword'];
+$password = "";
 $username = "root";
 $dbname = "arvessa";
 
@@ -14,26 +14,29 @@ if($conn-> connect_error){
     die("Connection failed: " . $conn->connect_error);
 }
 
-$sql = "SELECT Customer_ID FROM Manager WHERE Employee_No='$a'";
+$sql = "SELECT Employee_No FROM Manager WHERE Employee_No='$a'";
 $result = $conn->query($sql);
 
 if($result->num_rows >0){
+    $_SESSION['eno']=$a;
     header("Location: manShell.php");
  }
 else{
-    $sql = "SELECT Customer_ID FROM Cashier WHERE Employee_No='$a'";
+    $sql = "SELECT Employee_No FROM Cashier WHERE Employee_No='$a'";
     $result = $conn->query($sql);
     
     if($result->num_rows >0){
-    header("Location: empShell.php");
+        $_SESSION['eno']=$a;
+        header("Location: empShell.php");
     }  
     
     else{
-        $sql = "SELECT Customer_ID FROM Consultant WHERE Employee_No='$a'";
+        $sql = "SELECT Employee_No FROM Consultant WHERE Employee_No='$a'";
         $result = $conn->query($sql);
     
         if($result->num_rows >0){
-            header("Location: cons.php");
+            $_SESSION['eno']=$a;
+            header("Location: consShell.php");
         } 
         else{
             header("Location: employeeLogin.php");
@@ -42,5 +45,3 @@ else{
 }
     
 $conn->close();
-
-?>
