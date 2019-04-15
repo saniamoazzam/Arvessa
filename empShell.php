@@ -1,3 +1,7 @@
+<?php
+session_start();
+$emp = $_SESSION['eno'];
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -39,8 +43,24 @@
 
 <div class="page-content">
     <article>
+        <?php
+        $connection=mysqli_connect("localhost","root","","arvessa");
+        // Check connection
+        if (mysqli_connect_errno($connection))
+        {
+            echo "Failed to connect to MySQL: " . mysqli_connect_error();
+        }
+        $result = mysqli_query($connection, "SELECT First, Last FROM Employee Where (Employee_No = '$emp')");
+        $row = mysqli_fetch_array($result);
+
+        echo "<strong>Employee: ";
+        echo $row['First'];
+        echo " ";
+        echo $row['Last'];
+        echo "</strong> ";
+        ?>
         <div class="tabE">
-            <button class="tablinks" onclick="openCity(event, 'Purchase')">Purchase</button>
+            <button class="tablinks" onclick="openCity(event, 'Purchase')" id = "defaultOpen">Purchase</button>
             <button class="tablinks" onclick="openCity(event, 'Return')">Return</button>
             <button class="tablinks" onclick="openCity(event, 'Redeem')">Redeem</button>
         </div>
@@ -58,10 +78,14 @@
             </table>
 
             <div id="text" class="text">
-                     Total: $ <input type="text" name="amount"> <br> <br>
-                    Card Details: <input> <br> <br>
-                    Safety Card: <input><br> <br>
-                    <button id = "btn" type="executebtn">Execute Purchase</button>
+                Total: $ <input type="text" name="amount"> <br> <br>
+                Billing Address: <input><br>
+                Card Number: <input><br>
+                Card Expiry Date: <input><br>
+                Card CVC: <input> <br> <br>
+                Email Address: <input><br> <br>
+                Employee Card: <input> <br> <br>
+                    <button class="btns">Execute Purchase</button>
             </div>
         </div>
 
@@ -82,29 +106,54 @@
             </table>
 
             <div id="Text" class="text">
-                    Total: $ <input type="text" name="amount"> <br> <br>
-                    Card Details: <input> <br> <br>
-                    Safety Card: <input><br> <br>
-                    <button id = "btn" type="returbtn">Items to be returned</button>
+                Total: $ <input type="text" name="amount"> <br> <br>
+                Billing Address: <input><br>
+                Card Number: <input><br>
+                Card Expiry Date: <input><br>
+                Card CVC: <input> <br> <br>
+                Email Address: <input><br> <br>
+                Employee Card: <input> <br> <br>
+                    <button class="btns">Items to be returned</button>
             </div>
         </div>
 
         <div id="Redeem" class="tabcontent">
+            <?php
+            $connection=mysqli_connect("localhost","root","","arvessa");
+            // Check connection
+            if (mysqli_connect_errno($connection))
+            {
+                echo "Failed to connect to MySQL: " . mysqli_connect_error();
+            }
+            $result = mysqli_query($connection, "SELECT * FROM Rewards");
+            ?>
             <table>
                 <tr>
                     <th>Mini-Product</th>
-                    <th>Points</th>
+                    <th>Points Value</th>
                 </tr>
-                <tr>
-                    <td>Mac mini sample 25C</td>
-                    <td>200</td>
-                </tr>
+                <?php
+                if (mysqli_num_rows($result) > 0) {
+                    echo "<tr>";
+                    while ($row = mysqli_fetch_array($result)) {
+                        echo
+                            "<tr>"
+                            . "<td>"
+                            . $row['Name']
+                            . "</td>"
+                            . "<td>"
+                            . $row['Points_Value']
+                            . "</td>"
+                            . "</tr>";
+                    }
+                }
+                ?>
             </table>
 
             <div id="text" class="text">
                 Total Points: <br> <br>
-                Current Points after redeem: <br> <br>
-                <button id = "btn" type="redeembtn">Redeem</button>
+                Current Points: <br> <br>
+                <button class="btns">Redeem</button>
             </div>
         </div>
 
@@ -130,6 +179,8 @@
         document.getElementById(cityName).style.display = "block";
         evt.currentTarget.className += " active";
     }
+
+    document.getElementById("defaultOpen").click();
 </script>
 
 </body>

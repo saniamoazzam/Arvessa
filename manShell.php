@@ -1,3 +1,7 @@
+<?php
+session_start();
+$emp = $_SESSION['eno'];
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,6 +10,7 @@
     <link rel="stylesheet" href="stylesES.php"/>
 </head>
 <body id="home">
+
 <div id="header">
     <div class="container">
         <ul class="menu_top">
@@ -39,8 +44,22 @@
 
 <div class="page-content">
     <article>
-        <p><strong>Manager: Emily Taylor</strong><br> <br> </p>
+        <?php
+        $connection=mysqli_connect("localhost","root","","arvessa");
+        // Check connection
+        if (mysqli_connect_errno($connection))
+        {
+            echo "Failed to connect to MySQL: " . mysqli_connect_error();
+        }
+        $result = mysqli_query($connection, "SELECT First, Last FROM Employee Where (Employee_No = '$emp')");
+        $row = mysqli_fetch_array($result);
 
+        echo "<strong>Manager: ";
+        echo $row['First'];
+        echo " ";
+        echo $row['Last'];
+        echo "</strong> ";
+        ?>
         <div class="tabM">
             <button class="tablinks" onclick="openCity(event, 'Purchase')">Purchase</button>
             <button class="tablinks" onclick="openCity(event, 'Return')">Return</button>
@@ -62,9 +81,13 @@
             </table>
 
             <div id="Text" class="text">
-                     Total: $ <input type="text" name="amount"> <br> <br>
-                     Card Details: <input> <br> <br>
-                     Safety Card: <input> <br> <br>
+                    Total: $ <input type="text" name="amount"> <br> <br>
+                    Billing Address: <input><br>
+                    Card Number: <input><br>
+                    Card Expiry Date: <input><br>
+                    Card CVC: <input> <br> <br>
+                     Email Address: <input><br> <br>
+                    Employee Card: <input> <br> <br>
                     <button class="btns">Execute Purchase</button>
             </div>
         </div>
@@ -83,8 +106,12 @@
 
             <div id="Text" class="text">
                     Total: $ <input type="text" name="amount"> <br> <br>
-                    Card Details: <input> <br> <br>
-                    Safety Card: <input> <br> <br>
+                    Billing Address: <input><br>
+                    Card Number: <input><br>
+                    Card Expiry Date: <input><br>
+                    Card CVC: <input> <br> <br>
+                    Email Address: <input><br> <br>
+                    Employee Card: <input> <br> <br>
                     <button class="btns">Return Items</button>
             </div>
         </div>
@@ -129,6 +156,12 @@
         </div>
 
         <div id="Store Stock" class="tabcontent">
+            <table>
+                <tr>
+                    <th>Product</th>
+                    <th>Quantity Left</th>
+                    <th>Order Quantity</th>
+                </tr>
             <?php
             $connection=mysqli_connect("localhost","root","","arvessa");
             // Check connection
@@ -137,14 +170,6 @@
                 echo "Failed to connect to MySQL: " . mysqli_connect_error();
             }
             $result = mysqli_query($connection, "SELECT * FROM Product");
-            ?>
-            <table>
-                <tr>
-                    <th>Product</th>
-                    <th>Quantity Left</th>
-                    <th>Order Quantity</th>
-                </tr>
-            <?php
             if (mysqli_num_rows($result) > 0) {
                 echo "<tr>";
                 while ($row = mysqli_fetch_array($result)) {
@@ -165,20 +190,18 @@
                 ?>
             </table>
             <div id="Text" class="text">
-                <button class="btns">Order Stock</button>
+                <form action="manShell.php" method="post">
+                <button name = "order" class="btns">Order Stock</button>
+                </form>
+                <?php
+                if (isset($_POST['order '])) {
+                    echo "Your order has been sent";
+                }
+                ?>
             </div>
         </div>
 
         <div id="Store Information" class="tabcontent">
-            <?php
-            $connection=mysqli_connect("localhost","root","","arvessa");
-            // Check connection
-            if (mysqli_connect_errno($connection))
-            {
-                echo "Failed to connect to MySQL: " . mysqli_connect_error();
-            }
-            $result = mysqli_query($connection, "SELECT * FROM Employee");
-            ?>
             <table>
                 <tr>
                     <th>Number</th>
@@ -189,9 +212,16 @@
                     <th></th>
                 </tr>
                 <?php
-                if (mysqli_num_rows($result) > 0) {
+                $connection=mysqli_connect("localhost","root","","arvessa");
+                // Check connection
+                if (mysqli_connect_errno($connection))
+                {
+                    echo "Failed to connect to MySQL: " . mysqli_connect_error();
+                }
+                $result1 = mysqli_query($connection, "SELECT * FROM Employee");
+                if (mysqli_num_rows($result1) > 0) {
                     echo "<tr>";
-                    while ($row = mysqli_fetch_array($result)) {
+                    while ($row = mysqli_fetch_array($result1)) {
                         echo
                             "<tr>"
                             . "<td>"
@@ -212,7 +242,11 @@
                             . $row['Salary']
                             . "</td>"
                             . "<td>"
-                            . "<input type=\"submit\" name='editE' value='Edit'> <br><input type=\"submit\" name='deleteE' value='Delete'>"
+                            . "<a href=\"#\">Edit</a> <br>"
+                            . "<a href="
+                            . "delEmp.php?EmployeeNo="
+                            . $row['Employee_No']
+                            .">Delete</a>"
                             . "</td>"
                             . "</tr>";
                     }
@@ -221,37 +255,15 @@
             </table>
 
             <div id="Text" class="text">
-                <form action="manShell.php" method="post">
+                <form action="addEmp.php" method="post">
                 <strong>Hire Employee:</strong> <br> <br>
                 First Name: <input type="text" name="first"> Last: <input type="text" name="last"> <br> <br>
                 Birth date: <input type = "date" name="birth"> <br> <br>
                 Start date: <input type = "date" name="start"> <br> <br>
                 Salary: <input type="number" name="salary"> <br> <br>
-                <input type="submit" name="submitHIRE" class="btns" value="Hire">
+                <input type="submit" class="btns" value="Hire">
                 </form>
             </div>
-                <?php
-                $connection = mysqli_connect("localhost","root","","arvessa");
-                // Check connection
-                if (mysqli_connect_errno($connection))
-                {
-                    echo "Failed to connect to MySQL: " . mysqli_connect_error();
-                }
-
-                if (isset($_POST['submitHIRE'])) {
-                    $employeeID = mysqli_query($connection, "SELECT MAX(Employee_No) AS HIGH FROM Employee");
-                    $EID = mysqli_fetch_array($employeeID);
-                    $newID = $EID['HIGH'] + 1;
-
-                    $First = $_POST['first'];
-                    $Last = $_POST['last'];
-                    $Birth_Date = $_POST['birth'];
-                    $Start_Date = $_POST['start'];
-                    $Salary = $_POST['salary'];
-
-                    $sql = "INSERT INTO Employee VALUES ('".$newID."','".$First."','".$Last."','".$Birth_Date."','".$Start_Date."','".$Salary."')";
-                }
-                ?>
         </div>
     </article>
 </div>

@@ -1,3 +1,7 @@
+<?php
+session_start();
+$cust = $_SESSION['cid'];
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,8 +17,7 @@ if (mysqli_connect_errno($connection))
 {
     echo "Failed to connect to MySQL: " . mysqli_connect_error();
 }
-$result1 = mysqli_query($connection, "SELECT * FROM Consults AS C");
-$result2 = mysqli_query($connection, "SELECT First, Last FROM Employee AS E, Consults AS Co WHERE E.Employee_No = Co.Employee_No");
+$result1 = mysqli_query($connection, "SELECT * FROM Consults");
 ?>
 
 <div id="header">
@@ -81,13 +84,14 @@ $result2 = mysqli_query($connection, "SELECT First, Last FROM Employee AS E, Con
                     <th>Date</th>
                     <th>Time</th>
                     <th>Type</th>
-                    <th>Book?</th>
+                    <th>Confirm booking?</th>
                 </tr>
                 <?php
                 if (mysqli_num_rows($result1) > 0) {
                     echo "<tr>";
                     while ($row = mysqli_fetch_array($result1)) {
-                        if($row['Type'] == NULL) {
+                        if($row['Customer_ID'] == NULL) {
+                            $_SESSION = $row;
                             echo
                                 "<tr>"
                                 . "<td>"
@@ -99,17 +103,13 @@ $result2 = mysqli_query($connection, "SELECT First, Last FROM Employee AS E, Con
                                 . "<td>"
                                 . $row['Time']
                                 . "</td>"
-                                . "<td>"
+                                ."<td>"
                                 . $row['Type']
-                                . "<select>"
-                                . "<option value=\"makeup\">Make-up</option> <br>"
-                                . "<option value=\"skincare\">Skincare</option>"
-                                . "</select>"
-                                . "</td>"
+                                ."</td>"
                                 . "<td>"
-                                . "<form action=\"custAppt.php\" method=\"post\">"
-                                . "<input type=\"submit\" name='book' class='btns' value='Book'> <br>"
-                                . "</form>"
+                                . "<a href="
+                                . "bookConsultation.php?CustomerID=$cust"
+                                .">Book</a>"
                                 . "</td>"
                                 . "</tr>";
                         }
@@ -118,19 +118,6 @@ $result2 = mysqli_query($connection, "SELECT First, Last FROM Employee AS E, Con
                 ?>
                 </tr>
             </table>
-            <?php
-            $connection = mysqli_connect("localhost","root","","arvessa");
-            // Check connection
-            if (mysqli_connect_errno($connection))
-            {
-                echo "Failed to connect to MySQL: " . mysqli_connect_error();
-            }
-
-            if (isset($_POST['book'])) {
-                $sql = "UPDATE CONSULTS SET Customer_ID= 3, Type=Skin-care";
-            }
-
-            ?>
         </div>
     </article>
 </div>
