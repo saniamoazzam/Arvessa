@@ -1,3 +1,7 @@
+<?php
+session_start();
+$emp = $_SESSION['eno'];
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,15 +10,7 @@
     <link rel="stylesheet" href="stylesCS.php"/>
 </head>
 <body id="home">
-<?php
-$connection=mysqli_connect("localhost","root","","arvessa");
-// Check connection
-if (mysqli_connect_errno($connection))
-{
-    echo "Failed to connect to MySQL: " . mysqli_connect_error();
-}
-$result1 = mysqli_query($connection, "SELECT * FROM Consults AS C");
-?>
+
 <div id="header">
     <div class="container">
         <ul class="menu_top">
@@ -47,8 +43,25 @@ $result1 = mysqli_query($connection, "SELECT * FROM Consults AS C");
 </div>
 <div class="page-content">
     <article>
-        <p><strong>Consultant: Layla Mikel </strong><br> <br> </p>
-        <div>
+        <?php
+        $connection=mysqli_connect("localhost","root","","arvessa");
+        // Check connection
+        if (mysqli_connect_errno($connection))
+        {
+            echo "Failed to connect to MySQL: " . mysqli_connect_error();
+        }
+        $result = mysqli_query($connection, "SELECT First, Last FROM Employee Where (Employee_No = '$emp')");
+        $row = mysqli_fetch_array($result);
+
+        echo "<strong>Consultant: ";
+        echo $row['First'];
+        echo " ";
+        echo $row['Last'];
+        echo "</strong> ";
+        ?>
+        <p><strong><br>Booked Appointments </strong><br> <br> </p>
+
+        <div id ="oldAppt">
             <table>
                 <tr>
                     <th>Consulting</th>
@@ -58,10 +71,18 @@ $result1 = mysqli_query($connection, "SELECT * FROM Consults AS C");
                 </tr>
                 <tr>
                     <?php
+                    $connection=mysqli_connect("localhost","root","","arvessa");
+                    // Check connection
+                    if (mysqli_connect_errno($connection))
+                    {
+                        echo "Failed to connect to MySQL: " . mysqli_connect_error();
+                    }
+                    $result1 = mysqli_query($connection, "SELECT * FROM Consults WHERE (Employee_No = '$emp')");
+
                     if (mysqli_num_rows($result1) > 0) {
                         echo "<tr>";
                         while ($row = mysqli_fetch_array($result1)) {
-                            if($row['Type'] != NULL) {
+                            if(($row['Type'] != NULL) && ($row['Customer_ID'] != NULL)) {
                                 echo
                                     "<tr>"
                                     . "<td>"
@@ -76,7 +97,10 @@ $result1 = mysqli_query($connection, "SELECT * FROM Consults AS C");
                                     . $row['Type']
                                     . "</td>"
                                     . "<td>"
-                                    . "<a href=\"#\">Cancel</a>"
+                                    . "<a href="
+                                    . "delConsultation.php?CustomerID="
+                                    . $row['Customer_ID']
+                                    .">Cancel</a>"
                                     . "</td>"
                                     . "</tr>";
                             }
@@ -85,7 +109,27 @@ $result1 = mysqli_query($connection, "SELECT * FROM Consults AS C");
                     ?>
                 </tr>
             </table>
+            <br>
         </div>
+
+        <div id = "newAppt">
+            <p><strong>Add Availability</strong><br> <br> </p>
+            <table>
+                <tr>
+                    <th>Appointment Date</th>
+                    <th>Appointment Time</th>
+                    <th>Add?</th>
+                </tr>
+                <tr>
+                <form action="addConsultation.php" method="post">
+                    <td><input type="date" name="date"> <br></td>
+                    <td><input type = "text" name="time"> <br> </td>
+                    <?php
+                    $_SESSION['emp'] = $emp;?>
+                    <td><input type="submit" value="Add"></td>
+                </form>
+                </tr>
+            </table>
     </article>
 </div>
 <div id="footer">
